@@ -167,7 +167,7 @@ client.on('message', async message => {
                     msg.channel.send(msgembed).then(msg => {msg.delete({timeout: 10000})});
                 });}
                   
-            let voiceChannel = client.channels.cache.get('774603073661435904');
+            let voiceChannel = client.channels.cache.get('');
             music.connection = await voiceChannel.join();
 
             music.msg = message;
