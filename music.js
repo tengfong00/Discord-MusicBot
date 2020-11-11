@@ -4,7 +4,7 @@ const client = new Discord.Client();
 const ytdl = require('ytdl-core');
 
 class Music {
-    constructor(){
+    constructor() {
         this.isPlaying = false;
         this.queue = [];
         this.connection = {};
@@ -14,22 +14,22 @@ class Music {
         this.volume = 0.2;
     }
 
-    async add(message,playlist){
+    async add(message,playlist) {
         // Locate message channel
         this.msg = await message.channel;
 
         // Insert music info to array
         let i = 0;
-        for (i;i<=playlist.length-1;i++){
+        for (i; i <= playlist.length-1; i++) {
             let info = await ytdl.getBasicInfo(playlist[i]);
-            this.queue.push({
-                title:info.videoDetails.title,
-                pic:info.videoDetails.thumbnail.thumbnails[0].url,
-                url:playlist[i]
+            this.queue.push ({
+                title : info.videoDetails.title,
+                pic : info.videoDetails.thumbnail.thumbnails[0].url,
+                url : playlist[i]
             });
         }
 
-        if (this.isPlaying){
+        if (this.isPlaying) {
             this.msgEmbed();
         } else {
             this.isPlaying = true;
@@ -37,15 +37,15 @@ class Music {
         }
     }
 
-    async play(){
-        console.log(`Now play: ${this.queue[0].title}`);
+    async play() {
+        console.log(`Now play : ${ this.queue[0].title }`);
         this.dispatcher = this.connection.play(ytdl(this.queue[0].url, { filter: "audio" }));
         this.dispatcher.setVolume(this.volume);
         this.msgEmbed();
 
         this.dispatcher.on('finish', () => {
             this.queue.shift();
-            if (this.queue.length != 0){
+            if (this.queue.length != 0) {
                 this.play(this.queue[0]);
             } else {
                 console.log(`Finished playing`);
@@ -57,9 +57,9 @@ class Music {
         });
     }
 
-    async msgEmbed(){
+    async msgEmbed() {
         // Delete previous Music Player
-        if (this.embed){await this.embed.delete()}
+        if (this.embed) { await this.embed.delete() }
 
         // Create new Music Player
         const musicPlayerEmbed = new Discord.MessageEmbed()
@@ -105,7 +105,7 @@ class Music {
                 }
                 reaction.users.remove(user.id);
             } else if (reaction.emoji.name === '🔊') {
-                if (this.volume != 10){
+                if (this.volume != 10) {
                     this.volume = this.volume + 0.1;
                     this.dispatcher.setVolume(this.volume);
                 }
@@ -116,7 +116,7 @@ class Music {
         });
     }
 
-    reset(){
+    reset() {
         this.isPlaying = false;
         this.queue = [];
         this.connection = {};
@@ -141,15 +141,15 @@ client.on('message', async message => {
     let list = [];
     let totaladd = 0;
     
-    switch (command){
+    switch (command) {
         case 'music':
             let voiceChannel = message.member.voice.channel;
             //let voiceChannel = client.channels.cache.get(''); // Use for locate special channel
 
             // Check voice channel connection
-            if (!voiceChannel){
+            if (!voiceChannel) {
                 return message.delete()
-                    .then(msg => msg.channel.send(
+                    .then(msg => msg.channel.send (
                         new Discord.MessageEmbed()
                             .setColor('RED')
                             .setTitle(`⚠️  Unable to Play Music`)
@@ -162,16 +162,16 @@ client.on('message', async message => {
 
             // Verify YouTube Link
             musicLink.forEach(value => {
-                if (value.length != 0 && ytdl.validateURL(value)){
+                if (value.length != 0 && ytdl.validateURL(value)) {
                     totaladd = totaladd + 1;
                     list.push(value);
                 }
             });
 
             // Send music added message
-            if (totaladd == 0){
+            if (totaladd == 0) {
                 return message.delete()
-                    .then(msg => msg.channel.send(
+                    .then(msg => msg.channel.send (
                         new Discord.MessageEmbed()
                             .setColor('RED')
                             .setTitle(`⚠️  No Music added`)
@@ -183,7 +183,7 @@ client.on('message', async message => {
                 console.log(`${message.author.username} Added ${totaladd} music to queue`);
 
                 message.delete()
-                    .then(msg => msg.channel.send(
+                    .then(msg => msg.channel.send (
                         new Discord.MessageEmbed()
                             .setColor('GREEN')
                             .setTitle(`✅  Added ${totaladd} music to queue`)
@@ -196,7 +196,7 @@ client.on('message', async message => {
         case 'reset':
             music.reset();
             message.delete()
-            .then(msg => msg.channel.send(
+            .then(msg => msg.channel.send (
                 new Discord.MessageEmbed()
                     .setColor('BLUE')
                     .setTitle(`🔄  MusicBot Resetted`)
